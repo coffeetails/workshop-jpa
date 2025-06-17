@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /*
 [x] Basic CRUD Operations.
@@ -19,7 +20,7 @@ public interface AppUserRepository extends CrudRepository<AppUser, Integer> {
 
     List<AppUser> findByUsername(String username);
     List<AppUser> findByRegDateBetween(LocalDate start, LocalDate end);
-    AppUser findByIdInDetails(int id);
-    List<AppUser> findByEmailInDetailsIgoreCase(String email);
+    AppUser findByUserDetailsId(int id);
+    AppUser findByUserDetailsEmailIgnoreCase(String email);
 
 }

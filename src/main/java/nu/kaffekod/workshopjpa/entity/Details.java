@@ -21,8 +21,7 @@ public @Data class Details {
     private String name;
     private LocalDate birthDate;
 
-    public Details(int id, String email, String name, LocalDate birthDate) {
-        this.id = id;
+    public Details(String email, String name, LocalDate birthDate) {
         this.email = email;
         this.name = name;
         this.birthDate = birthDate;

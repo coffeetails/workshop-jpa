@@ -21,8 +21,8 @@ public @Data class AppUser {
     @Column(nullable = false, length = 100)
     private @ToString.Exclude String password;
     private LocalDate regDate;
-    @OneToOne
-    @JoinColumn(name = "user_details_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    //@JoinColumn(name = "user_details_id")
     private Details userDetails;
 
     // Set default value
@@ -30,8 +30,7 @@ public @Data class AppUser {
         regDate = LocalDate.now();
     }
 
-    public AppUser(int id, String username, String password, LocalDate regDate, Details userDetails) {
-        this.id = id;
+    public AppUser(String username, String password, LocalDate regDate, Details userDetails) {
         this.username = username;
         this.password = password;
         this.regDate = regDate;
