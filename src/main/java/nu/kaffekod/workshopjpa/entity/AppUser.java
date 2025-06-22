@@ -11,19 +11,21 @@ import java.time.LocalDate;
 [x] username need to be unique
  */
 
+@Data
 @Entity
-public @Data class AppUser {
+public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false, length = 100, unique = true)
     private String username;
+    @ToString.Exclude
     @Column(nullable = false, length = 100)
-    private @ToString.Exclude String password;
+    private String password;
     private LocalDate regDate;
-    @OneToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "user_details_id")
-    private Details userDetails;
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "details_id")
+    private Details userDetails; // details_id
 
     // Set default value
     public AppUser() {

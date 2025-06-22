@@ -1,5 +1,6 @@
 package nu.kaffekod.workshopjpa.repository;
 
+import jakarta.transaction.Transactional;
 import nu.kaffekod.workshopjpa.entity.BookLoan;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +23,7 @@ public interface BookLoanRepository extends CrudRepository<BookLoan, Integer> {
     public Iterable<BookLoan> findByDueDateBefore(java.time.LocalDate date);
     public Iterable<BookLoan> findByLoanDateBetween(java.time.LocalDate start, java.time.LocalDate end);
     @Modifying
-    @Query("update BookLoan SET BookLoan = true where BookLoan.id = ?1")
-    void setReturnedById(int id);
+    @Transactional
+    @Query("UPDATE BookLoan b SET b.returned = true WHERE b.id = :id")
+    void updateReturnedById(int id);
 }

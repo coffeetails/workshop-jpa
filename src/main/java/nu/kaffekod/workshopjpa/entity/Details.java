@@ -10,8 +10,9 @@ import java.time.LocalDate;
 [x] email need to be unique
  */
 
+@Data
 @Entity
-public @Data class Details {
+public class Details {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
