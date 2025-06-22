@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -58,26 +56,11 @@ public class MyCommandLineRunner implements CommandLineRunner {
         System.out.println("appuser2: " + appUser2.toString());
 
 
-        Optional<Book> book1Opt = bookRepository.findById(1);
-        Optional<Book> book2Opt = bookRepository.findById(2);
+        Book book1 = new Book("1223416660", "The Hobbit", 30);
+        Book book2 = new Book("2342352134", "1984", 30);
 
-        Book book1 = book1Opt.orElseGet(() -> {
-            Book newBook = new Book("1223416660", "The Hobbit", 30);
-            return bookRepository.save(newBook);
-        });
-        Book book2 = book2Opt.orElseGet(() -> {
-            Book newBook = new Book("2342352134", "1984", 30);
-            return bookRepository.save(newBook);
-        });
-        //Book finalBook1 = book1;
-        //Book finalBook2 = book2;
-        System.out.println("book1: " + book1.toString());
-        System.out.println("book2: " + book2.toString());
-
-
-
-        BookLoan bookLoan1 = bookLoanRepository.findById(1).orElseGet(() -> new BookLoan(LocalDate.now(), false, finalAppUser1, book1));
-        BookLoan bookLoan2 = bookLoanRepository.findById(2).orElseGet(() -> new BookLoan(LocalDate.now(), false, finalAppUser2, book2));
+        BookLoan bookLoan1 = bookLoanRepository.findById(1).orElseGet(() -> new BookLoan(LocalDate.now(), false, finalAppUser1, fetchOrSaveBook(1, book1)));
+        BookLoan bookLoan2 = bookLoanRepository.findById(2).orElseGet(() -> new BookLoan(LocalDate.now(), false, finalAppUser2, fetchOrSaveBook(2, book2)));
         /* */
         bookLoan1 = bookLoanRepository.save(bookLoan1);
         bookLoan2 = bookLoanRepository.save(bookLoan2);
@@ -87,9 +70,9 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
 
         Set<Book> booksWritten1 = new HashSet<>();
-        booksWritten1.add(book1);
         Set<Book> booksWritten2 = new HashSet<>();
-        booksWritten2.add(book2);
+        booksWritten1.add(fetchOrSaveBook(1, book1));
+        booksWritten2.add(fetchOrSaveBook(2, book2));
         Author author1 = authorRepository.findById(1).orElseGet(() -> new Author("John", "Tolkien", booksWritten1));
         Author author2 = authorRepository.findById(2).orElseGet(() -> new Author("George", "Orwell", booksWritten2));
         /* */
@@ -102,14 +85,7 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
     }
 
-    private Book fetchBook(int id, Book book) {
-        Optional<Book> book1Opt = bookRepository.findById(id);
-
-        Book book1 = book1Opt.orElseGet(() -> {
-            Book newBook = book;
-            return bookRepository.save(newBook);
-        });
-        System.out.println("book1: " + book1.toString());
-        return newBook;
+    private Book fetchOrSaveBook(int id, Book book) {
+        return bookRepository.findById(id).orElseGet(() -> bookRepository.save(book));
     }
 }
