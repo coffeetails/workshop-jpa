@@ -28,10 +28,12 @@ public class MyCommandLineRunner implements CommandLineRunner {
         this.authorRepository = authorRepository;
     }
 
-    @Transactional
+    @Transactional // I don't recommend forgetting to add this lil shit
     @Override
     public void run(String... args) throws Exception {
         System.out.println("=== Application started ===");
+        /*          It's dangerous to go alone! Take this           *\
+        \*                            🗡️                            */
 
         Details details1 = detailsRepository.findById(1).orElseGet(() ->
             detailsRepository.save(new Details("sam@tidigt.com", "Sam Tidigt", LocalDate.of(1981, 2, 20) ))
@@ -44,19 +46,21 @@ public class MyCommandLineRunner implements CommandLineRunner {
         System.out.println("→ details2: " + details2);
 
 
+        Details finalDetails2 = details1;
         AppUser appUser1 = appUserRepository.findById(1).orElseGet(() ->
-                appUserRepository.save(new AppUser("samtid", "pass", LocalDate.now(), details1))
+                appUserRepository.save(new AppUser("samtid", "pass", LocalDate.now(), finalDetails2))
         );
         System.out.println("→ appuser1: " + appUser1);
+        Details finalDetails3 = details2;
         AppUser appUser2 = appUserRepository.findById(2).orElseGet(() ->
-                appUserRepository.save(new AppUser("stiner", "pass", LocalDate.now(), details2))
+                appUserRepository.save(new AppUser("stiner", "pass", LocalDate.now(), finalDetails3))
         );
         System.out.println("→ appuser2: " + appUser2);
 
 
-        Book book1 = fetchOrSaveBook(1, new Book("1223416660", "The Hobbit", 30));
+        Book book1 = fetchOrSaveBook("1223416660", new Book("1223416660", "The Hobbit", 30));
         System.out.println("→ book1: " + book1);
-        Book book2 = fetchOrSaveBook(2, new Book("2342352134", "1984", 30));
+        Book book2 = fetchOrSaveBook("2342352134", new Book("2342352134", "1984", 30));
         System.out.println("→ book2: " + book2);
 
 
@@ -66,9 +70,9 @@ public class MyCommandLineRunner implements CommandLineRunner {
         System.out.println("→ bookLoan2: " + bookLoan2.toString());
 
 
-        book1 = fetchOrSaveBook(1, new Book("1223416660", "The Hobbit", 30));
+        book1 = fetchOrSaveBook("1223416660", new Book("1223416660", "The Hobbit", 30));
         System.out.println("→ book1 " + book1);
-        book2 = fetchOrSaveBook(2, new Book("2342352134", "1984", 30));
+        book2 = fetchOrSaveBook("2342352134", new Book("2342352134", "1984", 30));
         System.out.println("→ book2 " + book2);
 
 
@@ -84,6 +88,41 @@ public class MyCommandLineRunner implements CommandLineRunner {
         Author author2 = fetchOrSaveAuthor(2, new Author("George", "Orwell", booksWritten22));
         System.out.println("→ author2: " + author2.toString());
 
+        System.out.println(" === update appuser ===");
+
+        book1 = fetchOrSaveBook("1223416660", new Book("1223416660", "The Hobbit", 30));
+        System.out.println("→ book1 " + book1);
+        bookLoan1 = fetchOrSaveBookLoan(1, new BookLoan(LocalDate.now(), false, appUser1, book1));
+        System.out.println("→ bookloan1: " + bookLoan1);
+        details1 = detailsRepository.findById(1).orElseGet(() ->
+                detailsRepository.save(new Details("sam@tidigt.com", "Sam Tidigt", LocalDate.of(1981, 2, 20) ))
+        );
+        System.out.println("→ details1: " + details1);
+        Details finalDetails1 = details1;
+        appUser1 = appUserRepository.findById(1).orElseGet(() ->
+                appUserRepository.save(new AppUser("samtid", "pass", LocalDate.now(), finalDetails1))
+        );
+        System.out.println("→ appuser1: " + appUser1);
+        appUser1.setBookLoan(bookLoan1);
+        System.out.println("→ appuser1 " + appUser1);
+
+
+        book2 = fetchOrSaveBook("2342352134", new Book("2342352134", "1984", 30));
+        System.out.println("→ book2 " + book2);
+        bookLoan2 = fetchOrSaveBookLoan(2, new BookLoan(LocalDate.now(), false, appUser2, book2));
+        System.out.println("→ bookLoan2 " + bookLoan2);
+
+        details2 = detailsRepository.findById(2).orElseGet(() ->
+                detailsRepository.save(new Details("stig@ner.com", "Stig Ner", LocalDate.of(1991, 2, 20) ))
+        );
+        System.out.println("→ details2: " + details2);
+        Details finalDetails = details2;
+        appUser2 = appUserRepository.findById(2).orElseGet(() ->
+                appUserRepository.save(new AppUser("stiner", "pass", LocalDate.now(), finalDetails))
+        );
+        System.out.println("→ appuser2: " + appUser2);
+        appUser2.setBookLoan(bookLoan2);
+        System.out.println("→ appuser2: " + appUser2);
 
     }
 
@@ -92,8 +131,13 @@ public class MyCommandLineRunner implements CommandLineRunner {
     private Author fetchOrSaveAuthor(int id, Author author) {
         return authorRepository.findById(id).orElseGet(() -> authorRepository.save(author));
     }
-    private Book fetchOrSaveBook(int id, Book book) {
-        return bookRepository.findById(id).orElseGet(() -> bookRepository.save(book));
+    private Book fetchOrSaveBook(String isbn, Book book) {
+        Book foundBook = bookRepository.findByIsbnIgnoreCase(isbn);
+        if (foundBook != null) {
+            return foundBook;
+        } else {
+            return bookRepository.save(book);
+        }
     }
     private BookLoan fetchOrSaveBookLoan(int id, BookLoan bookLoan) {
         return bookLoanRepository.findById(id).orElseGet(() -> bookLoanRepository.save(bookLoan));

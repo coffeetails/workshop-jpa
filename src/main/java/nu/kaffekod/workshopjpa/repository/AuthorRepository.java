@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 
-/* todo
+/*
 [x] Find by first name.
 [x] Find by last name
 [x] Find by first name or last name containing a keyword.

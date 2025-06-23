@@ -8,10 +8,13 @@ public @Data class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(nullable = false, length = 100, unique = true)
     private String isbn;
+
     @Column(nullable = false, length = 100)
     private String title;
+
     @Column(nullable = false)
     private int maxLoanDays;
 

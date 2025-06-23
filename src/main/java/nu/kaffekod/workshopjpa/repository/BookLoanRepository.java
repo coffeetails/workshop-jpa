@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-/* todo
+/*
 [x] Basic CRUD Operations.
 [x] Find by borrower's ID.
 [x] Find by book ID.
